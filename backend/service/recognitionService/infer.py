@@ -9,7 +9,7 @@ import sys
 
 import math
 import time
-
+import ctc_segmentation
 from pip import main
 import logging
 import torch.nn.functional as F
@@ -19,11 +19,11 @@ import torch
 from fairseq import checkpoint_utils, options, progress_bar, tasks, utils, pdb
 from fairseq.dataclass.utils import convert_namespace_to_omegaconf
 from fairseq.logging.meters import StopwatchMeter, TimeMeter
-from examples.speech_recognition.w2l_decoder import W2lViterbiDecoder
 from sanic.request import File
 
 from backend.decorator.singleton import singleton
 from backend.utils.AudioReader import AudioReader
+from fairseq_lib.examples.speech_recognition.w2l_decoder import W2lViterbiDecoder
 
 logging.basicConfig()
 logging.root.setLevel(logging.INFO)
@@ -334,7 +334,42 @@ class Inference:
 
         return hyp_pieces
 
+    def get_segment(self, path, text):
+        use_cuda = torch.cuda.is_available() and not self.args.cpu
+        logger.info(f"use_cuda: {use_cuda}, using {'cpu' if self.args.cpu else 'gpu'} decoding")
+        logger.info("| decoding with criterion {}".format(self.args.criterion))
 
+        sample = self.get_samples([path])
+        sample = utils.move_to_cuda(sample) if use_cuda else sample
+
+        encoder_input = {
+            k: v for k, v in sample["net_input"].items() if k != "prev_output_tokens"
+        }
+        with torch.no_grad():
+            emissions = self.generator.get_emissions(self.models, encoder_input)
+            softmax = torch.nn.LogSoftmax(dim=-1)
+            lpz = softmax(emissions)[0].cpu().numpy()
+
+        index_duration = sample["net_input"]["source"].shape[1] / lpz.shape[0] / 16000
+        config = ctc_segmentation.CtcSegmentationParameters(char_list=self.task.target_dictionary.symbols)
+        config.index_duration = index_duration
+        config.min_window_size = 6400
+        # config.score_min_mean_over_L = 10
+        # CTC segmentation
+        ground_truth_mat, utt_begin_indices = ctc_segmentation.prepare_text(config, text)
+        timings, char_probs, state_list = ctc_segmentation.ctc_segmentation(config, lpz, ground_truth_mat)
+        segments = ctc_segmentation.determine_utterance_segments(config, utt_begin_indices, char_probs, timings, text)
+
+        results = []
+        for word, segment in zip(text, segments):
+            results.append({
+                "start": segment[0],
+                "end": segment[1],
+                "score": segment[2],
+                "text": word
+            })
+            print(f"{segment[0]:.3f} {segment[1]:.3f} {segment[2]:3.4f} {word}")
+        return results
 
 
 def make_parser():
@@ -348,9 +383,9 @@ if __name__ == '__main__':
     args = options.parse_args_and_arch(parser)
     check_args(args)
     task = Inference(args)
-    print(task.infer(path='/C2_519.wav'))
-    print(task.infer(path='/C2_519.wav'))
-    print(task.infer(path='/C2_519.wav'))
-    print(task.infer(path='/C2_519.wav'))
-    print(task.infer(path='/C2_519.wav'))
+    print(task.infer(path='/dataset/speech/aishell/data_aishell/wav/test/S0764/BAC009S0764W0406.wav'))
+    print(task.get_segment('/dataset/speech/aishell/data_aishell/wav/test/S0764/BAC009S0764W0406.wav', ['好莱坞当红明星之前曾被盛传将扮演斯诺登']))
+    # print(task.infer(path='/dataset/speech/aishell/data_aishell/wav/test/S0764/BAC009S0764W0311.wav'))
+    # print(task.infer(path='/dataset/speech/aishell/data_aishell/wav/test/S0764/BAC009S0764W0263.wav'))
+
 

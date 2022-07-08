@@ -26,11 +26,27 @@ async def speech_sample_rate_exception(request, exception):
 
 @recognition_route.post('/recognition')
 async def recognition(request):
-    """add  a user  ,need administrator identify"""
     audio_file = request.files.get('audio', None)
     if not audio_file:
         raise MissParameters('audio is empty')
     result = recongnitionService.infer(audio_file).replace('|', '').replace(' ', '')
+    return json(
+        ResponseBody(message=f'Success',
+                     status_code=StatusCode.RECOGNITION_FINISHED.name,
+                     data=result).__dict__,
+        200)
+
+
+@recognition_route.post('/segment')
+async def segment(request):
+    audio_file = request.files.get('audio', None)
+    text = request.form.get('text', None)
+    if not audio_file:
+        raise MissParameters('audio is missing')
+    if not text:
+        raise MissParameters('text is missing')
+
+    result = recongnitionService.get_segment(audio_file, text)
     return json(
         ResponseBody(message=f'Success',
                      status_code=StatusCode.RECOGNITION_FINISHED.name,
