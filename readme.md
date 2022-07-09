@@ -1,5 +1,10 @@
 # wav2vec2 语音识别http接口服务器
 
+## CER
+在评测数据集[SpeechIO](https://github.com/SpeechColab/Leaderboard)
+上字错率如下图，改模型为完全端到端的wav2vec2-large模型在没有语音模型下的结果
+![CER](res/speechIO-CER.png)
+
 ## 当前功能
 * 中文语音识别功能: 给定中文语音识别为中文文本
 * 中文语音文本对齐：给定中文语音与文本，输出时间锚点信息
