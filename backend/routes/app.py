@@ -7,7 +7,7 @@ import os
 from time import sleep
 
 import sys
-sys.path.append('/root/wav2vec2-webserver')
+sys.path.append('/wav2vec2-webserver')
 from sanic import Sanic
 from sanic.exceptions import RequestTimeout, NotFound
 from sanic.response import json
@@ -56,7 +56,7 @@ async def notfound(request, exception):
 
 def load_banner():
     """load the banner"""
-    with open('banner.txt', 'r', encoding='utf-8') as f:
+    with open('./banner.txt', 'r', encoding='utf-8') as f:
         banner = f.read()
 
     print(banner)
@@ -66,5 +66,7 @@ app.blueprint(recognition_route)
 if __name__ == '__main__':
     load_banner()
     port = int(Config.get_instance().get('http.port', 80))
+    # if env $port is none ,get the config port or default port
+    port = os.environ.get('PORT', port)
     app.run(host="0.0.0.0", port=port)
 
