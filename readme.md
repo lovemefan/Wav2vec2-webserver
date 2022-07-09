@@ -2,7 +2,9 @@
 
 ## CER
 在评测数据集[SpeechIO](https://github.com/SpeechColab/Leaderboard)
-上字错率如下图，改模型为完全端到端的wav2vec2-large模型在没有语音模型下的结果
+上字错率如下图。
+
+该模型在完全端到端的wav2vec2-large模型没有语言模型下的评测结果如下：
 ![CER](res/speechIO-CER.png)
 
 ## 当前功能
