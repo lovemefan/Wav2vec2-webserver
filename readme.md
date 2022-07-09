@@ -27,8 +27,9 @@ data = /w2v2-fairseq-model
 path = /w2v2-fairseq-model/checkpoint_best.pt
 ;粒度， 词表由 path和labels 组成
 labels = ltr
-
+```
 ### 3. 构建docker镜像
+
 ```bash
 sudo docker build -t w2v2-webserver .
 ```
