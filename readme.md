@@ -14,6 +14,7 @@
 git clone https://github.com/lovemefan/Wav2vec2-webserver.git
 cd Wav2vec2-webserver
 ```
+
 ### 2. 修改配置文件 `/backend/config/config.ini`
 以下参数必填
 ```ini
@@ -31,21 +32,25 @@ labels = ltr
 ```bash
 sudo docker build -t w2v2-webserver .
 ```
+
 ### 4. 创建容器
+
 ```bash
 # 自行更改端口
 sudo docker run -d -e "PORT=8080"--name w2v2-webserver -p8080:8080 w2v2-web:latest
 ```
 
 ### 5. 接口请求
-
 #### 5.1 识别接口
 语音文件格式要求采样率为16kHz,采样位宽为16bit，单通道的wav格式的音频。
+
 ```bash
 curl --location --request POST 'http://localhost:8090/v1/api/speech/recognition' \
 --form 'audio=@F:\语料\aishell\data_aishell\wav\S0002\train\S0002\BAC009S0002W0122.wav'
 ```
+
 返回结果
+
 ```json
 {
 	"message": "Success",
@@ -54,6 +59,7 @@ curl --location --request POST 'http://localhost:8090/v1/api/speech/recognition'
 	"data": "而对面楼市成交抑制作用最大的限购"
 }
 ```
+
 #### 5.2对齐接口
 文本以句号、问号、感叹号、双引号为分句标志，输出以句子粒度的对齐结果。
 ```bash
@@ -61,7 +67,9 @@ curl --location --request POST 'http://localhost:8080/v1/api/speech/segment' \
 --form 'audio=@F:\语料\aishell\data_aishell\wav\S0002\train\S0002\BAC009S0002W0122.wav' \
 --form 'text=而对面楼市成交抑制作用最大的限购。'
 ```
+
 返回结果
+
 ```json
 {
 	"message": "Success",
