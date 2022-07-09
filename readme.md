@@ -11,6 +11,83 @@
 * 中文语音识别功能: 给定中文语音识别为中文文本
 * 中文语音文本对齐：给定中文语音与文本，输出时间锚点信息
 
+## 项目结构
+```bash
+├── backend
+│   ├── config
+│   │   ├── BaseConfig.py
+│   │   ├── config.ini
+│   │   ├── Config.py
+│   │   ├── config.yml
+│   ├── decorator
+│   │   ├── mysql.py
+│   │   └── singleton.py
+│   ├── Dockerfile
+│   ├── exception
+│   │   ├── InvalidSystemClock.py
+│   │   └── SpeechException.py
+│   ├── model
+│   │   └── ResponseBody.py
+│   ├── requirements.txt
+│   ├── routes
+│   │   ├── app.py
+│   │   ├── banner.txt
+│   │   └── recognitionRoute
+│   ├── scripts
+│   │   └── run-dev.sh
+│   ├── service
+│   │   └── recognitionService
+│   └── utils
+│       ├── AudioReader.py
+│       ├── logger.py
+│       ├── md5Utils.py
+│       ├── __pycache__
+│       ├── snowflake.py
+│       ├── StatusCode.py
+│       └── viterbi.py
+├── Dockerfile
+├── fairseq_lib
+│   ├── build
+│   │   ├── lib.linux-x86_64-cpython-38
+│   │   └── temp.linux-x86_64-cpython-38
+│   ├── CODE_OF_CONDUCT.md
+│   ├── CONTRIBUTING.md
+│   ├── examples
+│   │   ├── __init__.py
+│   │   ├── speech_recognition
+│   │   ├── speech_text_joint_to_text
+│   │   ├── speech_to_text
+│   │   └── wav2vec
+│   ├── fairseq
+│   ├── fairseq_cli
+│   ├── finetuning_zh.sh
+│   ├── hubconf.py
+│   ├── LICENSE
+│   ├── pyproject.toml
+│   ├── README.md
+│   ├── scripts
+│   ├── setup.py
+│   └── train.py
+├── readme.md
+├── res
+│   └── speechIO-CER.png
+└── w2v2-fairseq-model
+    ├── checkpoint_best.pt
+    ├── configs
+    │   ├── fine-tuning.sh
+    │   ├── infer_char.sh
+    │   ├── infer_char_with_kenlm.sh
+    │   ├── outputs
+    │   ├── prepared_data.sh
+    │   ├── utils
+    │   └── wav2vec2_finetuning.yaml
+    ├── dict.ltr.txt
+    └── tensorboard
+        ├── dev
+        ├── train
+        └── train_inner
+```
+
 ## 部署
 从源码构建
 模型基于fairseq的wav2vec2-large 在wenetspeech 10000h的预训练模型，在约两千小时的开源语料微调得到(后续开源)
