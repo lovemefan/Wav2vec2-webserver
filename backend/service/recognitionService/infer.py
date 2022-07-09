@@ -99,14 +99,6 @@ def check_args(args):
             args.replace_unk is None or args.raw_text
     ), "--replace-unk requires a raw text dataset (--raw-text)"
 
-
-class SanicFile(File):
-    def __init__(self, file: File):
-        self.file = file
-
-    def read(self):
-        return self.file.body
-
 def load_models_and_criterions(
         filenames, data_path, arg_overrides=None, task=None, model_state=None
 ):
@@ -208,6 +200,8 @@ class Inference:
         return feats
 
     def get_sample(self, path):
+        # if the path is the object of sanic `File`, it will convert the bytes into array of numpy
+        # else if path is Pathlike,it will read the path of audio using soundfile library
         if isinstance(path, File):
             wav, curr_sample_rate = AudioReader.read_pcm16(path.body)
         else:
