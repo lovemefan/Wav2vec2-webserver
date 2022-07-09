@@ -7,7 +7,7 @@ import os
 from time import sleep
 
 import sys
-sys.path.append('/wav2vec2-webserver')
+sys.path.append(os.path.join('../', os.path.dirname(os.getcwd())))
 from sanic import Sanic
 from sanic.exceptions import RequestTimeout, NotFound
 from sanic.response import json
