@@ -41,7 +41,6 @@
 │       ├── AudioReader.py
 │       ├── logger.py
 │       ├── md5Utils.py
-│       ├── __pycache__
 │       ├── snowflake.py
 │       ├── StatusCode.py
 │       └── viterbi.py
