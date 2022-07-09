@@ -29,6 +29,7 @@ path = /w2v2-fairseq-model/checkpoint_best.pt
 labels = ltr
 ```
 ### 3. 构建docker镜像
+需要根据需求修改Dockerfile
 
 ```bash
 sudo docker build -t w2v2-webserver .
