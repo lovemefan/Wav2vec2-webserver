@@ -34,7 +34,7 @@ class TransformersBase:
         # take argmax and decode
         predicted_ids = torch.argmax(logits, dim=-1)
         transcription = self.processor.batch_decode(predicted_ids)
-        return transcription
+        return transcription[0]
 
     def get_logits(self, speech):
         if isinstance(speech, str):
