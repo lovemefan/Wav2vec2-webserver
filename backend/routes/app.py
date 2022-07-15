@@ -7,10 +7,14 @@ import os
 from time import sleep
 
 import sys
+
+from backend.routes.cor import add_cors_headers
+from backend.routes.options import setup_options
+
 sys.path.append(os.path.join('../', os.path.dirname(os.getcwd())))
-from sanic import Sanic
+from sanic import Sanic, Request
 from sanic.exceptions import RequestTimeout, NotFound
-from sanic.response import json
+from sanic.response import json, HTTPResponse
 from sanic_openapi import swagger_blueprint
 
 from backend.exception.SpeechException import MissParameters
@@ -54,6 +58,33 @@ async def notfound(request, exception):
 
     return json(response, 404)
 
+
+@app.middleware("request")
+def cors_middle_req(request: Request):
+    """路由需要启用OPTIONS方法"""
+    if request.method.lower() == 'options':
+        allow_headers = [
+            'Authorization',
+            'content-type'
+        ]
+        headers = {
+            'Access-Control-Allow-Methods':
+                ', '.join(request.app.router.get_supported_methods(request.path)),
+            'Access-Control-Max-Age': '86400',
+            'Access-Control-Allow-Headers': ', '.join(allow_headers),
+        }
+        return HTTPResponse('', headers=headers)
+
+@app.middleware("response")
+def cors_middle_res(request: Request, response: HTTPResponse):
+    """跨域处理"""
+    allow_origin = '*'
+    response.headers.update(
+        {
+            'Access-Control-Allow-Origin': allow_origin,
+        }
+    )
+
 def load_banner():
     """load the banner"""
     with open('banner.txt', 'r', encoding='utf-8') as f:
@@ -63,6 +94,7 @@ def load_banner():
 
 
 app.blueprint(recognition_route)
+
 if __name__ == '__main__':
     load_banner()
     port = int(Config.get_instance().get('http.port', 80))
