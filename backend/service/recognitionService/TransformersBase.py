@@ -3,11 +3,13 @@
 # @Author : lovemefan
 # @Email : lovemefan@outlook.com
 # @File : TransformersBase.py
+from sanic.request import File
 from transformers import Wav2Vec2Processor, Wav2Vec2ForCTC, Wav2Vec2FeatureExtractor
 from datasets import load_dataset
 import soundfile as sf
 import torch
 
+from backend.utils.AudioReader import AudioReader
 from backend.utils.logger import logger
 
 
@@ -37,6 +39,8 @@ class TransformersBase:
     def get_logits(self, speech):
         if isinstance(speech, str):
             speech, _ = sf.read(speech)
+        if isinstance(speech, File):
+            wav, curr_sample_rate = AudioReader.read_pcm16(speech.body)
 
         # tokenize
         input_values = self.processor(speech, return_tensors="pt", padding="longest").input_values.to(self.device)
