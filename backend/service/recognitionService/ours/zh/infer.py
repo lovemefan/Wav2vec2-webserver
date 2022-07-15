@@ -377,7 +377,7 @@ if __name__ == '__main__':
     args = options.parse_args_and_arch(parser)
     check_args(args)
     task = Inference(args)
-    print(task.infer(path='/dataset/speech/aishell/data_aishell/wav/test/S0764/BAC009S0764W0406.wav'))
+    # print(task.infer(path='/dataset/speech/aishell/data_aishell/wav/test/S0764/BAC009S0764W0406.wav'))
     print(task.get_segment('/dataset/speech/aishell/data_aishell/wav/test/S0764/BAC009S0764W0406.wav', ['好莱坞当红明星之前曾被盛传将扮演斯诺登']))
     # print(task.infer(path='/dataset/speech/aishell/data_aishell/wav/test/S0764/BAC009S0764W0311.wav'))
     # print(task.infer(path='/dataset/speech/aishell/data_aishell/wav/test/S0764/BAC009S0764W0263.wav'))

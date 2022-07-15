@@ -10,7 +10,6 @@ from backend.exception.SpeechException import SpeechSampleRateException, MissPar
 from backend.model.ResponseBody import ResponseBody
 from backend.service.recognitionService.RecognitionService import RecognitionService
 from backend.utils.StatusCode import StatusCode
-from backend.utils.logger import logger
 
 recognition_route = Blueprint('speech', url_prefix='/api/speech', version=1)
 recongnitionService = RecognitionService()
@@ -27,9 +26,13 @@ async def speech_sample_rate_exception(request, exception):
 @recognition_route.post('/recognition')
 async def recognition(request):
     audio_file = request.files.get('audio', None)
+    language = request.form.get('language', None)
+    if not language:
+        raise MissParameters('language is empty')
+
     if not audio_file:
         raise MissParameters('audio is empty')
-    result = recongnitionService.infer(audio_file).replace('|', '').replace(' ', '')
+    result = recongnitionService.infer(audio_file, language).replace('|', '').replace(' ', '')
     return json(
         ResponseBody(message=f'Success',
                      status_code=StatusCode.RECOGNITION_FINISHED.name,
@@ -41,12 +44,15 @@ async def recognition(request):
 async def segment(request):
     audio_file = request.files.get('audio', None)
     text = request.form.get('text', None)
+    language = request.form.get('language', None)
+    if not language:
+        raise MissParameters('language is empty')
     if not audio_file:
         raise MissParameters('audio is missing')
     if not text:
         raise MissParameters('text is missing')
 
-    result = recongnitionService.get_segment(audio_file, text)
+    result = recongnitionService.get_segment(audio_file, text, language)
     return json(
         ResponseBody(message=f'Success',
                      status_code=StatusCode.RECOGNITION_FINISHED.name,

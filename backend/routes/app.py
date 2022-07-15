@@ -56,7 +56,7 @@ async def notfound(request, exception):
 
 def load_banner():
     """load the banner"""
-    with open('backend/routes/banner.txt', 'r', encoding='utf-8') as f:
+    with open('banner.txt', 'r', encoding='utf-8') as f:
         banner = f.read()
 
     print(banner)
