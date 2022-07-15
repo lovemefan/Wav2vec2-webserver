@@ -32,7 +32,7 @@ async def recognition(request):
 
     if not audio_file:
         raise MissParameters('audio is empty')
-    result = recongnitionService.infer(audio_file, language).replace('|', '').replace(' ', '')
+    result = recongnitionService.infer(audio_file, language).replace('|', '')
     return json(
         ResponseBody(message=f'Success',
                      status_code=StatusCode.RECOGNITION_FINISHED.name,
