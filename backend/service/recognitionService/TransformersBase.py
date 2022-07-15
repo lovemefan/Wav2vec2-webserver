@@ -43,7 +43,7 @@ class TransformersBase:
             wav, curr_sample_rate = AudioReader.read_pcm16(speech.body)
 
         # tokenize
-        input_values = self.processor(speech, return_tensors="pt", padding="longest").input_values.to(self.device)
+        input_values = self.processor(wav, return_tensors="pt", padding="longest").input_values.to(self.device)
         # retrieve logits
         with torch.no_grad():
             logits = self.model(input_values).logits
