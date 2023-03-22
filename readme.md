@@ -1,5 +1,13 @@
 # wav2vec2/hubert 语音识别http接口服务器
 
+
+## Quick start
+Docker hub: https://hub.docker.com/r/lovemefan/whisper-webserver
+```bash
+# for gpu
+docker run -d --gpus all -p 8080:8080  lovemefan/wav2vec2-webserver:latest
+```
+
 ## CER
 ### 中文模型
 在评测数据集[SpeechIO](https://github.com/SpeechColab/Leaderboard)
