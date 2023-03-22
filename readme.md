@@ -2,7 +2,7 @@
 
 
 ## Quick start
-Docker hub: https://hub.docker.com/r/lovemefan/whisper-webserver
+Docker hub: [https://hub.docker.com/r/lovemefan/whisper-webserver](https://hub.docker.com/r/lovemefan/wav2vec2-webserver)
 ```bash
 # for gpu
 docker run -d --gpus all -p 8080:8080  lovemefan/wav2vec2-webserver:latest
